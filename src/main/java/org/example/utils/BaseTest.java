@@ -3,8 +3,7 @@ package org.example.utils;
 import io.qameta.allure.Allure;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+
 import org.openqa.selenium.WebDriver;
 import org.example.driver.WebDriverCreator;
 

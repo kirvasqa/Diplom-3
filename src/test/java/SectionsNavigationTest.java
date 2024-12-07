@@ -1,4 +1,3 @@
-import io.qameta.allure.Description;
 import org.assertj.core.api.SoftAssertions;
 import io.qameta.allure.junit4.DisplayName;
 import org.example.pageobjects.ConstructorPage;
@@ -7,14 +6,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 
 @RunWith(Parameterized.class)
 public class SectionsNavigationTest  extends BaseTest {
-    public SectionsNavigationTest (String browser) {
+    public SectionsNavigationTest(String browser) {
         super(browser);
+        this.browser = browser;
     }
 
     @Parameterized.Parameters
@@ -27,94 +25,91 @@ public class SectionsNavigationTest  extends BaseTest {
 
 
     @Test
-    @DisplayName("Проверка раздела БУЛКИ")
-    @Description("Проверить, что заголовок 'Булки' и 'Соусы' виден, а 'Начинки' скрыты")
-    public void checkBunsSection() {
+    @DisplayName("Проверка координат заголовка 'Булки' после переходов")
+    public void testBunsHeaderCoordinatesAfterSwitchingSections() throws  InterruptedException { // Укажите правильное исключение
         ConstructorPage constructorPage = new ConstructorPage(driver);
-        SoftAssertions softAssertions = new SoftAssertions();
+        SoftAssertions softly = new SoftAssertions();
+
+
+        Point expectedCoordinates = constructorPage.setInitialHeaderCoordinates(browser);
+
+
 
         constructorPage.clickOnSaucesSection();
-        new WebDriverWait(driver, Duration.ofSeconds(5));
+        Thread.sleep(800);
+
         constructorPage.clickOnBunsSection();
+        Thread.sleep(800);
+        Point bunsCoordinatesAfterSauces = constructorPage.getBunsHeaderPosition();
 
+        softly.assertThat(bunsCoordinatesAfterSauces.getX())
+                .as("Координаты X заголовка 'Булки' после 'Соусы'")
+                .isEqualTo(expectedCoordinates.getX());
+        softly.assertThat(bunsCoordinatesAfterSauces.getY())
+                .as("Координаты Y заголовка 'Булки' после 'Соусы'")
+                .isEqualTo(expectedCoordinates.getY());
 
-        Point bunsHeaderPosition = constructorPage.getBunsHeaderPositionIfVisible();
-        softAssertions.assertThat(bunsHeaderPosition)
-                .as("Заголовок 'Булки' должен быть видим")
-                .isNotNull();
-
-
-        Point saucesHeaderPosition = constructorPage.getSaucesHeaderPositionIfVisible();
-        softAssertions.assertThat(saucesHeaderPosition)
-                .as("Заголовок 'Соусы' должен быть видим")
-                .isNotNull();
-
-
-        Point fillingsHeaderPosition = constructorPage.getFillingsHeaderPositionIfVisible();
-        softAssertions.assertThat(fillingsHeaderPosition)
-                .as("Заголовок 'Начинки' не должен быть видим")
-                .isNull();
-
-        softAssertions.assertAll();
-    }
-
-    @Test
-    @DisplayName("Проверка раздела СОУСЫ")
-    @Description("Проверить, что заголовок 'Соусы' и 'Начинки' виден, а 'Булки' скрыты")
-    public void checkSaucesSection() {
-        ConstructorPage constructorPage = new ConstructorPage(driver);
-        SoftAssertions softAssertions = new SoftAssertions();
-
-        constructorPage.clickOnSaucesSection();
-
-
-        Point saucesHeaderPosition = constructorPage.getSaucesHeaderPositionIfVisible();
-        softAssertions.assertThat(saucesHeaderPosition)
-                .as("Заголовок 'Соусы' должен быть видим и его координаты не должны быть равны null")
-                .isNotNull();
-
-
-        Point bunsHeaderPosition = constructorPage.getBunsHeaderPositionIfVisible();
-        softAssertions.assertThat(bunsHeaderPosition)
-                .as("Заголовок 'Булки' не должен быть видим") // здесь исправлено
-                .isNull();
-
-
-        Point fillingsHeaderPosition = constructorPage.getFillingsHeaderPositionIfVisible();
-        softAssertions.assertThat(fillingsHeaderPosition)
-                .as("Заголовок 'Начинки' должен быть видим и его координаты не должны быть равны null")
-                .isNotNull();
-
-        softAssertions.assertAll();
-    }
-
-    @Test
-    @DisplayName("Проверка раздела НАЧИНКИ")
-    @Description("Проверить, что заголовок 'Начинки' виден, а 'Булки' и 'Соусы' скрыты")
-    public void checkFillingsSection() {
-        ConstructorPage constructorPage = new ConstructorPage(driver);
-        SoftAssertions softAssertions = new SoftAssertions();
 
         constructorPage.clickOnFillingsSection();
+        Thread.sleep(800);
+
+        constructorPage.clickOnBunsSection();
+        Thread.sleep(800);
+        Point bunsCoordinatesAfterFillings = constructorPage.getBunsHeaderPosition();
+
+        softly.assertThat(bunsCoordinatesAfterFillings.getX())
+                .as("Координаты X заголовка 'Булки' после 'Начинки'")
+                .isEqualTo(expectedCoordinates.getX());
+        softly.assertThat(bunsCoordinatesAfterFillings.getY())
+                .as("Координаты Y заголовка 'Булки' после 'Начинки'")
+                .isEqualTo(expectedCoordinates.getY());
+
+        softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("Проверка координат заголовка 'Соусы' после клика на вкладку")
+    public void testSaucesHeaderCoordinates() throws InterruptedException {
+        ConstructorPage constructorPage = new ConstructorPage(driver);
+        SoftAssertions softly = new SoftAssertions();
+
+        Point expectedCoordinates = constructorPage.setInitialHeaderCoordinates(browser);
+
+        constructorPage.clickOnSaucesSection();
+        Thread.sleep(500);
+
+        Point saucesHeaderCoordinates = constructorPage.getSaucesHeaderPosition();
+
+        softly.assertThat(saucesHeaderCoordinates.getX())
+                .as("Координаты X заголовка 'Соусы' не совпадают с координатами булки")
+                .isEqualTo(expectedCoordinates.getX());
+        softly.assertThat(saucesHeaderCoordinates.getY())
+                .as("Координаты Y заголовка 'Соусы' не совпадают с координатами булки")
+                .isEqualTo(expectedCoordinates.getY());
 
 
-        Point fillingsHeaderPosition = constructorPage.getFillingsHeaderPositionIfVisible();
-        softAssertions.assertThat(fillingsHeaderPosition)
-                .as("Заголовок 'Начинки' должен быть видим и его координаты не должны быть равны null")
-                .isNotNull();
+        softly.assertAll();
+    }
 
+    @Test
+    @DisplayName("Проверка координат заголовков 'Начинки', 'Булки' и 'Соусы' после выбора ")
+    public void testFillingsHeaderCoordinates() throws InterruptedException {
+        ConstructorPage constructorPage = new ConstructorPage(driver);
+        SoftAssertions softly = new SoftAssertions();
 
-        Point bunsHeaderPosition = constructorPage.getBunsHeaderPositionIfVisible();
-        softAssertions.assertThat(bunsHeaderPosition)
-                .as("Заголовок 'Булки' не должен быть видим")
-                .isNull();
+        Point expectedCoordinates = constructorPage.setInitialHeaderCoordinates(browser);
 
+        constructorPage.clickOnFillingsSection();
+        Thread.sleep(1000);
+        Point fillingHeadersCoordinates = constructorPage.getFillingsHeaderPosition();
 
-        Point saucesHeaderPosition = constructorPage.getSaucesHeaderPositionIfVisible();
-        softAssertions.assertThat(saucesHeaderPosition)
-                .as("Заголовок 'Соусы' не должен быть видим")
-                .isNull();
+        softly.assertThat(fillingHeadersCoordinates.getX())
+                .as("Координаты X заголовка 'Соусы' не совпадают с координатами булки")
+                .isEqualTo(expectedCoordinates.getX());
+        softly.assertThat(fillingHeadersCoordinates.getY())
+                .as("Координаты Y заголовка 'Соусы' не совпадают с координатами булки")
+                .isEqualTo(expectedCoordinates.getY());
 
-        softAssertions.assertAll();
+        softly.assertAll();
     }
 }

@@ -87,10 +87,6 @@
               <value>${project.build.directory}/allure-results</value>
             </property>
           </systemProperties>
-          <parallel>classes</parallel>
-          <useUnlimitedThreads>false</useUnlimitedThreads>
-          <perCoreThreadCount>false</perCoreThreadCount>
-          <threadCountClasses>2</threadCountClasses>
         </configuration>
       </plugin>
       <plugin>

@@ -2,11 +2,13 @@ package org.example.pageobjects;
 
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 
 
-public class ConstructorPage { // Указываем public для доступа из других пакетов
+public class ConstructorPage {
 
     private final WebDriver driver;
+    private String browser;
 
     public static final String CONSTRUCTOR_URL = "https://stellarburgers.nomoreparties.site/";
 
@@ -16,7 +18,7 @@ public class ConstructorPage { // Указываем public для доступ�
 
     private final By createOrderButton = By.xpath(".//section[2]/div/button[text()='Оформить заказ']");
 
-    private final By bunsSection = By.xpath("//*[@id=\"root\"]/div/main/section[1]/div[1]");
+    private final By bunsSection = By.xpath("//*[@id=\"root\"]/div/main/section[1]/div[1]/div[1]");
     private final By saucesSection = By.xpath("//*[@id=\"root\"]/div/main/section[1]/div[1]/div[2]");
     private final By fillingsSection = By.xpath("//*[@id=\"root\"]/div/main/section[1]/div[1]/div[3]");
 
@@ -63,33 +65,41 @@ public class ConstructorPage { // Указываем public для доступ�
     public void clickOnFillingsSection() {
         driver.findElement(fillingsSection).click();
     }
-
-
-    @Step("Проверить, что заголовок 'Булки' виден и вернуть его координаты")
-    public Point getBunsHeaderPositionIfVisible() {
-        return getElementPositionIfVisible(bunsHeader);
+@Step("Инициализация ожидаемых координат заголовка 'Булки' для браузера {browser}")
+    public Point setInitialHeaderCoordinates(String browser) {
+        if (browser.equals("chrome")) {
+            // Возвращаем координаты для Chrome
+            return new Point(340, 243);
+        } else if (browser.equals("yandex")) {
+            // Возвращаем координаты для Yandex
+            return new Point(316, 243);
+        } else {
+            // Обработка случая, если браузер не распознан (На случай если буду использовать такое в дальнейшем)
+            throw new IllegalArgumentException("Неизвестный тип браузера: " + browser);
+        }
     }
 
-    @Step("Проверить, что заголовок 'Соусы' виден и вернуть его координаты")
-    public Point getSaucesHeaderPositionIfVisible() {
-        return getElementPositionIfVisible(saucesHeader);
+    @Step("Получить координаты заголовка 'Булки'")
+    public Point getBunsHeaderPosition() {
+        return getHeaderPosition(bunsHeader);
     }
 
-    @Step("Проверить, что заголовок 'Начинки' виден и вернуть его координаты")
-    public Point getFillingsHeaderPositionIfVisible() {
-        return getElementPositionIfVisible(fillingsHeader);
+    @Step("Получить координаты заголовка 'Соусы'")
+    public Point getSaucesHeaderPosition() {
+        return getHeaderPosition(saucesHeader);
     }
 
-    private Point getElementPositionIfVisible(By locator) {
+    @Step("Получить координаты заголовка 'Начинки'")
+    public Point getFillingsHeaderPosition() {
+        return getHeaderPosition(fillingsHeader);
+    }
+
+    private Point getHeaderPosition(By headerLocator) {
         try {
-            WebElement element = driver.findElement(locator);
-            if (element.isDisplayed()) {
-                return element.getLocation();
-            } else {
-                return null; // Элемент не видим
-            }
+            WebElement headerElement = driver.findElement(headerLocator);
+            return headerElement.getLocation();
         } catch (NoSuchElementException e) {
-            return null; // Элемент не найден
+            return null;
         }
     }
 }
