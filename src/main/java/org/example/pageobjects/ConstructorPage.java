@@ -72,7 +72,7 @@ public class ConstructorPage {
             return new Point(332, 243);
         } else if (browser.equals("yandex")) {
             // Возвращаем координаты для Yandex
-            return new Point(316, 243);
+            return new Point(308, 243);
         } else {
             // Обработка случая, если браузер не распознан (На случай если буду использовать такое в дальнейшем)
             throw new IllegalArgumentException("Неизвестный тип браузера: " + browser);
