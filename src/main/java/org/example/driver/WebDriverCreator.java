@@ -24,7 +24,6 @@ public class WebDriverCreator {
         WebDriverManager.chromedriver().driverVersion("131").setup();
         WebDriver driver = new ChromeDriver(options);
         driver.manage().window().setSize(new Dimension(1920, 1080)); // Установка разрешения 1920x1080
-        driver.manage().window().maximize();
         return driver;
     }
 

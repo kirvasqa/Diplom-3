@@ -69,7 +69,7 @@ public class ConstructorPage {
     public Point setInitialHeaderCoordinates(String browser) {
         if (browser.equals("chrome")) {
             // Возвращаем координаты для Chrome
-            return new Point(340, 243);
+            return new Point(332, 243);
         } else if (browser.equals("yandex")) {
             // Возвращаем координаты для Yandex
             return new Point(316, 243);
